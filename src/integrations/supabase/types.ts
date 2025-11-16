@@ -223,6 +223,57 @@ export type Database = {
           },
         ]
       }
+      video_interview_sessions: {
+        Row: {
+          analysis_result: Json | null
+          analyzed_at: string | null
+          body_language_score: number | null
+          confidence_score: number | null
+          created_at: string | null
+          delivery_score: number | null
+          duration_seconds: number | null
+          feedback_summary: string | null
+          id: string
+          overall_score: number | null
+          question: string
+          status: string | null
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          analysis_result?: Json | null
+          analyzed_at?: string | null
+          body_language_score?: number | null
+          confidence_score?: number | null
+          created_at?: string | null
+          delivery_score?: number | null
+          duration_seconds?: number | null
+          feedback_summary?: string | null
+          id?: string
+          overall_score?: number | null
+          question: string
+          status?: string | null
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          analysis_result?: Json | null
+          analyzed_at?: string | null
+          body_language_score?: number | null
+          confidence_score?: number | null
+          created_at?: string | null
+          delivery_score?: number | null
+          duration_seconds?: number | null
+          feedback_summary?: string | null
+          id?: string
+          overall_score?: number | null
+          question?: string
+          status?: string | null
+          user_id?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

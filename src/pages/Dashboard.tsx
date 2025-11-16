@@ -81,6 +81,9 @@ const Dashboard = () => {
             <Button variant="ghost" onClick={() => navigate("/learning-paths")}>
               Learning Paths
             </Button>
+            <Button variant="ghost" onClick={() => navigate("/video-practice")}>
+              Video Practice
+            </Button>
             <Button variant="ghost" onClick={() => navigate("/profile")}>
               Profile
             </Button>
@@ -100,14 +103,24 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/interview/new")}>
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-gradient-hero flex items-center justify-center mb-4">
                 <Play className="w-6 h-6 text-primary-foreground" />
               </div>
-              <CardTitle>Start New Interview</CardTitle>
-              <CardDescription>Begin a new practice session</CardDescription>
+              <CardTitle>Text Interview</CardTitle>
+              <CardDescription>Practice with AI chat</CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/video-interview")}>
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-destructive flex items-center justify-center mb-4">
+                <Brain className="w-6 h-6 text-destructive-foreground" />
+              </div>
+              <CardTitle>Video Practice</CardTitle>
+              <CardDescription>Record & get AI feedback</CardDescription>
             </CardHeader>
           </Card>
 
