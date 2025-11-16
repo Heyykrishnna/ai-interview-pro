@@ -52,6 +52,16 @@ const Index = () => {
               </p>
             </Card>
 
+            <Card className="p-6 hover:shadow-medium transition-all cursor-pointer" onClick={() => navigate("/video-interview")}>
+              <div className="w-14 h-14 rounded-lg bg-destructive flex items-center justify-center mb-4">
+                <Brain className="w-7 h-7 text-destructive-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Video Practice</h3>
+              <p className="text-muted-foreground">
+                Record your responses and get AI feedback on delivery, body language, and confidence
+              </p>
+            </Card>
+
             <Card className="p-6 hover:shadow-medium transition-all">
               <div className="w-14 h-14 rounded-lg bg-secondary flex items-center justify-center mb-4">
                 <Target className="w-7 h-7 text-secondary-foreground" />
@@ -69,16 +79,6 @@ const Index = () => {
               <h3 className="text-xl font-semibold mb-3">Resume Analysis</h3>
               <p className="text-muted-foreground">
                 Upload your resume for personalized interview questions based on your experience
-              </p>
-            </Card>
-
-            <Card className="p-6 hover:shadow-medium transition-all">
-              <div className="w-14 h-14 rounded-lg bg-primary flex items-center justify-center mb-4">
-                <TrendingUp className="w-7 h-7 text-primary-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Track Progress</h3>
-              <p className="text-muted-foreground">
-                Monitor your improvement over time with detailed session history
               </p>
             </Card>
           </div>
