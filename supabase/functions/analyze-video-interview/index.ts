@@ -42,32 +42,55 @@ serve(async (req) => {
     // 3. Analyze audio for speech patterns
     // 4. Generate comprehensive feedback
 
-    // For now, we'll use AI to generate analysis based on the question
-    const analysisPrompt = `You are an expert interview coach analyzing a video interview response.
+    // Use detailed prompts for more accurate analysis
+    const analysisPrompt = `You are an expert interview coach with 15+ years of experience. Analyze this video interview response in detail.
 
-Question asked: "${question}"
-Duration: ${session.duration_seconds} seconds
+INTERVIEW DETAILS:
+- Question: "${question}"
+- Duration: ${session.duration_seconds} seconds
+- Context: B.Tech CSE student preparing for technical internships
 
-Provide a comprehensive analysis with:
-1. Overall assessment (1-2 paragraphs)
-2. Delivery score (0-100) - evaluate speech clarity, pace, filler words
-3. Body language score (0-100) - evaluate posture, eye contact, gestures
-4. Confidence score (0-100) - evaluate overall presence and assurance
-5. List 3-4 specific strengths
-6. List 3-4 specific areas for improvement
+ANALYSIS REQUIREMENTS:
+Evaluate based on professional interview standards and provide precise scores:
 
-Format your response as JSON with this structure:
+1. DELIVERY (0-100): Analyze speech patterns
+   - Clarity and articulation (25 points)
+   - Pacing and rhythm (25 points)
+   - Filler words usage (25 points)
+   - Tone and energy (25 points)
+
+2. BODY LANGUAGE (0-100): Assess non-verbal communication
+   - Posture and positioning (25 points)
+   - Eye contact (camera engagement) (25 points)
+   - Hand gestures and movements (25 points)
+   - Facial expressions (25 points)
+
+3. CONFIDENCE (0-100): Measure overall presence
+   - Self-assurance in responses (33 points)
+   - Handling of pauses/thinking time (33 points)
+   - Professional demeanor (34 points)
+
+4. OVERALL SCORE: Weighted average considering all factors
+
+FEEDBACK REQUIREMENTS:
+- Provide 2-3 paragraphs of detailed, actionable feedback
+- List 3-5 specific strengths with examples
+- List 3-5 areas for improvement with concrete suggestions
+- Be honest but constructive
+- Reference the specific question context
+
+RESPONSE FORMAT (strict JSON):
 {
-  "delivery_score": number,
-  "body_language_score": number,
-  "confidence_score": number,
-  "overall_score": number,
-  "feedback_summary": "string with detailed feedback",
-  "strengths": ["strength1", "strength2", ...],
-  "improvements": ["improvement1", "improvement2", ...]
+  "delivery_score": <number 0-100>,
+  "body_language_score": <number 0-100>,
+  "confidence_score": <number 0-100>,
+  "overall_score": <number 0-100>,
+  "feedback_summary": "<detailed 2-3 paragraph analysis>",
+  "strengths": ["<specific strength 1>", "<specific strength 2>", ...],
+  "improvements": ["<actionable improvement 1>", "<actionable improvement 2>", ...]
 }
 
-Base your scores on typical interview performance for B.Tech CSE students preparing for internships.`;
+Be precise, objective, and calibrated for entry-level technical roles.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -78,13 +101,14 @@ Base your scores on typical interview performance for B.Tech CSE students prepar
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "google/gemini-2.5-pro",
           messages: [
             {
               role: "user",
               content: analysisPrompt,
             },
           ],
+          temperature: 0.3,
         }),
       }
     );

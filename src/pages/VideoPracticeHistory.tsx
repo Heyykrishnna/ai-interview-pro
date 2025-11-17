@@ -96,10 +96,16 @@ const VideoPracticeHistory = () => {
             <h2 className="text-3xl font-bold mb-2">Video Practice History</h2>
             <p className="text-muted-foreground">Review your past video interview sessions</p>
           </div>
-          <Button onClick={() => navigate("/video-interview")}>
-            <Video className="w-4 h-4 mr-2" />
-            New Practice Session
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate("/progress-analytics")}>
+              <TrendingUp className="w-4 h-4 mr-2" />
+              View Analytics
+            </Button>
+            <Button onClick={() => navigate("/video-interview")}>
+              <Video className="w-4 h-4 mr-2" />
+              New Practice Session
+            </Button>
+          </div>
         </div>
 
         {sessions.length === 0 ? (

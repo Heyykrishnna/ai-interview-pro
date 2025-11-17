@@ -4,8 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Brain, LogOut, Send, CheckCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Brain, LogOut, Send, CheckCircle, Mic, MicOff, Volume2 } from "lucide-react";
 import { toast } from "sonner";
+import { useVoiceChat } from "@/hooks/useVoiceChat";
 
 interface Message {
   role: "assistant" | "user";
@@ -21,7 +23,28 @@ const InterviewSession = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [streamingMessage, setStreamingMessage] = useState("");
+  const [voiceMode, setVoiceMode] = useState(false);
+  const [interimTranscript, setInterimTranscript] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { isListening, isSpeaking, startListening, stopListening, speak, stopSpeaking } = useVoiceChat({
+    onTranscript: (text, isFinal) => {
+      if (isFinal) {
+        setInput(text);
+        setInterimTranscript("");
+        setTimeout(() => {
+          if (text.trim()) {
+            sendMessage(text);
+          }
+        }, 500);
+      } else {
+        setInterimTranscript(text);
+      }
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
 
   useEffect(() => {
     checkAuth();
@@ -68,7 +91,6 @@ const InterviewSession = () => {
           }))
         );
       } else {
-        // Start the interview with initial greeting
         await sendMessage("", true);
       }
     } catch (error) {
@@ -93,8 +115,8 @@ const InterviewSession = () => {
       if (!isInitial) {
         setMessages(newMessages);
         setInput("");
+        setInterimTranscript("");
 
-        // Save user message
         await supabase.from("interview_messages").insert({
           session_id: id,
           role: "user",
@@ -102,7 +124,6 @@ const InterviewSession = () => {
         });
       }
 
-      // Call interview chat function
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/interview-chat`,
         {
@@ -128,52 +149,53 @@ const InterviewSession = () => {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let assistantMessage = "";
-      let textBuffer = "";
+      let assistantResponse = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        textBuffer += decoder.decode(value, { stream: true });
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n");
 
-        let newlineIndex: number;
-        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-          let line = textBuffer.slice(0, newlineIndex);
-          textBuffer = textBuffer.slice(newlineIndex + 1);
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6);
+            if (data === "[DONE]") continue;
 
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (line.startsWith(":") || line.trim() === "") continue;
-          if (!line.startsWith("data: ")) continue;
-
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === "[DONE]") break;
-
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content;
-            if (content) {
-              assistantMessage += content;
-              setStreamingMessage(assistantMessage);
+            try {
+              const parsed = JSON.parse(data);
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content) {
+                assistantResponse += content;
+                setStreamingMessage(assistantResponse);
+              }
+            } catch (e) {
+              // Ignore parsing errors
             }
-          } catch {
-            // Ignore parse errors for incomplete chunks
           }
         }
       }
 
-      // Save assistant message
+      const finalMessage: Message = {
+        role: "assistant",
+        content: assistantResponse,
+      };
+      setMessages((prev) => [...prev, finalMessage]);
+      setStreamingMessage("");
+
       await supabase.from("interview_messages").insert({
         session_id: id,
         role: "assistant",
-        content: assistantMessage,
+        content: assistantResponse,
       });
 
-      setMessages([...newMessages, { role: "assistant", content: assistantMessage }]);
-      setStreamingMessage("");
-    } catch (error) {
+      if (voiceMode && assistantResponse) {
+        speak(assistantResponse);
+      }
+    } catch (error: any) {
       console.error("Error sending message:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to send message");
+      toast.error(error.message || "Failed to send message");
     } finally {
       setSending(false);
     }
@@ -199,99 +221,150 @@ const InterviewSession = () => {
     navigate("/");
   };
 
+  const toggleVoiceMode = () => {
+    if (voiceMode) {
+      stopListening();
+      stopSpeaking();
+      setVoiceMode(false);
+    } else {
+      startListening();
+      setVoiceMode(true);
+      toast.success("Voice mode enabled. Start speaking!");
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
+  const getInterviewTypeDisplay = (type: string) => {
+    switch (type) {
+      case "technical":
+        return "Technical Interview";
+      case "behavioral":
+        return "Behavioral Interview";
+      case "resume":
+        return "Resume-Based Interview";
+      default:
+        return "Interview";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-muted/30 flex flex-col">
-      {/* Header */}
-      <header className="bg-card border-b border-border shadow-soft flex-shrink-0">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Brain className="w-8 h-8 text-primary" />
-            <div>
-              <h1 className="text-xl font-bold text-primary">AI Interview Session</h1>
-              <p className="text-sm text-muted-foreground capitalize">{session?.interview_type} Interview</p>
+    <div className="min-h-screen bg-background flex flex-col">
+      <header className="border-b border-border bg-card">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Brain className="h-8 w-8 text-primary" />
+              <div>
+                <h1 className="text-xl font-bold text-foreground">
+                  {session && getInterviewTypeDisplay(session.interview_type)}
+                </h1>
+                <p className="text-sm text-muted-foreground">AI Interview Practice</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <Button 
+                onClick={toggleVoiceMode} 
+                variant={voiceMode ? "default" : "outline"} 
+                size="sm"
+              >
+                {voiceMode ? (
+                  <>
+                    <MicOff className="h-4 w-4 mr-2" />
+                    Disable Voice
+                  </>
+                ) : (
+                  <>
+                    <Mic className="h-4 w-4 mr-2" />
+                    Enable Voice
+                  </>
+                )}
+              </Button>
+              <Button onClick={endInterview} variant="outline" size="sm">
+                <CheckCircle className="h-4 w-4 mr-2" />
+                End Interview
+              </Button>
+              <Button onClick={handleLogout} variant="ghost" size="sm">
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
             </div>
           </div>
-          <nav className="flex items-center gap-4">
-            <Button variant="outline" onClick={endInterview}>
-              <CheckCircle className="w-4 h-4 mr-2" />
-              End Interview
-            </Button>
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
-          </nav>
         </div>
       </header>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="container mx-auto px-4 py-6 max-w-4xl">
-          <div className="space-y-6">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <Card
-                  className={`max-w-[80%] p-4 ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card"
-                  }`}
-                >
-                  <div
-                    className="prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{
-                      __html: message.content.replace(/\n/g, "<br>"),
-                    }}
-                  />
-                </Card>
-              </div>
-            ))}
-
-            {streamingMessage && (
-              <div className="flex justify-start">
-                <Card className="max-w-[80%] p-4 bg-card">
-                  <div
-                    className="prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{
-                      __html: streamingMessage.replace(/\n/g, "<br>"),
-                    }}
-                  />
-                </Card>
-              </div>
-            )}
-
-            {sending && !streamingMessage && (
-              <div className="flex justify-start">
-                <Card className="p-4 bg-card">
-                  <div className="flex gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
-                  </div>
-                </Card>
-              </div>
-            )}
-
-            <div ref={messagesEndRef} />
+      <main className="flex-1 overflow-hidden flex flex-col container mx-auto px-4 py-6 max-w-4xl">
+        {voiceMode && (
+          <div className="flex justify-center mb-4">
+            <Badge variant="secondary" className="text-sm">
+              {isListening && <Mic className="h-3 w-3 mr-1 animate-pulse" />}
+              {isSpeaking && <Volume2 className="h-3 w-3 mr-1 animate-pulse" />}
+              {isListening && !isSpeaking && "Listening..."}
+              {isSpeaking && "AI Speaking..."}
+              {!isListening && !isSpeaking && "Voice Mode Active"}
+            </Badge>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Input */}
-      <div className="border-t border-border bg-card flex-shrink-0">
-        <div className="container mx-auto px-4 py-4 max-w-4xl">
-          <div className="flex gap-4">
+        <div className="flex-1 overflow-y-auto space-y-4 mb-4">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`flex ${
+                message.role === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              <Card
+                className={`max-w-[85%] p-4 ${
+                  message.role === "user"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted"
+                }`}
+              >
+                <div className="whitespace-pre-wrap">{message.content}</div>
+              </Card>
+            </div>
+          ))}
+
+          {interimTranscript && (
+            <div className="flex justify-end">
+              <Card className="max-w-[85%] p-4 bg-primary/50 text-primary-foreground border-dashed">
+                <div className="whitespace-pre-wrap italic">{interimTranscript}</div>
+              </Card>
+            </div>
+          )}
+
+          {streamingMessage && (
+            <div className="flex justify-start">
+              <Card className="max-w-[85%] p-4 bg-muted">
+                <div className="whitespace-pre-wrap">{streamingMessage}</div>
+              </Card>
+            </div>
+          )}
+
+          {sending && !streamingMessage && (
+            <div className="flex justify-start">
+              <Card className="max-w-[85%] p-4 bg-muted">
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                  <span>AI is thinking...</span>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="border-t border-border pt-4">
+          <div className="flex gap-2">
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -301,20 +374,22 @@ const InterviewSession = () => {
                   sendMessage(input);
                 }
               }}
-              placeholder="Type your answer here... (Press Enter to send, Shift+Enter for new line)"
-              className="min-h-[60px] resize-none"
-              disabled={sending}
+              placeholder={voiceMode ? "Speak or type your answer..." : "Type your answer..."}
+              className="flex-1"
+              rows={3}
+              disabled={(voiceMode && isListening) || sending}
             />
             <Button
               onClick={() => sendMessage(input)}
-              disabled={sending || !input.trim()}
-              size="lg"
+              disabled={!input.trim() || sending || (voiceMode && isListening)}
+              size="icon"
+              className="self-end"
             >
-              <Send className="w-5 h-5" />
+              <Send className="h-4 w-4" />
             </Button>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
