@@ -84,6 +84,9 @@ const Dashboard = () => {
             <Button variant="ghost" onClick={() => navigate("/video-practice")}>
               Video Practice
             </Button>
+            <Button variant="ghost" onClick={() => navigate("/job-market")}>
+              Job Market
+            </Button>
             <Button variant="ghost" onClick={() => navigate("/profile")}>
               Profile
             </Button>
@@ -103,7 +106,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
           <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/interview/new")}>
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-gradient-hero flex items-center justify-center mb-4">
@@ -141,6 +144,16 @@ const Dashboard = () => {
               </div>
               <CardTitle>Learning Paths</CardTitle>
               <CardDescription>Explore career roadmaps</CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/job-market")}>
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-chart-1 flex items-center justify-center mb-4">
+                <Brain className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <CardTitle>Job Market</CardTitle>
+              <CardDescription>AI trends & guidance</CardDescription>
             </CardHeader>
           </Card>
         </div>

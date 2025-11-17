@@ -69,7 +69,7 @@ const Index = () => {
             <p className="text-xl text-gray-600">Everything you need to succeed in your next interview</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             <Card className="p-8 hover:shadow-xl transition-all border-0 bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl cursor-pointer" onClick={() => handleNavigate("/auth")}>
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-6 shadow-lg shadow-violet-500/30">
                 <Brain className="w-7 h-7 text-white" />
@@ -107,6 +107,16 @@ const Index = () => {
               <h3 className="text-xl font-bold mb-3 text-gray-900">Resume Analysis</h3>
               <p className="text-gray-600 leading-relaxed">
                 Upload your resume for personalized interview questions based on your experience
+              </p>
+            </Card>
+
+            <Card className="p-8 hover:shadow-xl transition-all border-0 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl cursor-pointer" onClick={() => handleNavigate("/job-market")}>
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
+                <TrendingUp className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-gray-900">Job Market Insights</h3>
+              <p className="text-gray-600 leading-relaxed">
+                AI-researched trends and personalized career guidance for interview preparation
               </p>
             </Card>
           </div>

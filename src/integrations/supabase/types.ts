@@ -87,6 +87,51 @@ export type Database = {
           },
         ]
       }
+      job_market_trends: {
+        Row: {
+          category: string
+          created_at: string | null
+          demand_level: string
+          description: string
+          growth_rate: string | null
+          id: string
+          key_companies: Json | null
+          last_updated: string | null
+          preparation_tips: Json | null
+          salary_range: string | null
+          title: string
+          trending_skills: Json | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          demand_level: string
+          description: string
+          growth_rate?: string | null
+          id?: string
+          key_companies?: Json | null
+          last_updated?: string | null
+          preparation_tips?: Json | null
+          salary_range?: string | null
+          title: string
+          trending_skills?: Json | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          demand_level?: string
+          description?: string
+          growth_rate?: string | null
+          id?: string
+          key_companies?: Json | null
+          last_updated?: string | null
+          preparation_tips?: Json | null
+          salary_range?: string | null
+          title?: string
+          trending_skills?: Json | null
+        }
+        Relationships: []
+      }
       job_profiles: {
         Row: {
           category: string
@@ -182,6 +227,42 @@ export type Database = {
           linkedin_url?: string | null
           resume_url?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_career_recommendations: {
+        Row: {
+          created_at: string | null
+          id: string
+          learning_priorities: Json | null
+          market_insights: string | null
+          preparation_roadmap: string | null
+          recommended_roles: Json | null
+          skill_gaps: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          learning_priorities?: Json | null
+          market_insights?: string | null
+          preparation_roadmap?: string | null
+          recommended_roles?: Json | null
+          skill_gaps?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          learning_priorities?: Json | null
+          market_insights?: string | null
+          preparation_roadmap?: string | null
+          recommended_roles?: Json | null
+          skill_gaps?: Json | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
