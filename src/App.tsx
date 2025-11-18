@@ -15,6 +15,7 @@ import VideoInterviewResults from "./pages/VideoInterviewResults";
 import VideoPracticeHistory from "./pages/VideoPracticeHistory";
 import ProgressAnalytics from "./pages/ProgressAnalytics";
 import JobMarketInsights from "./pages/JobMarketInsights";
+import AdaptiveInterview from "./pages/AdaptiveInterview";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,8 +37,9 @@ const App = () => (
         <Route path="/video-interview" element={<VideoInterview />} />
         <Route path="/video-interview/:id/results" element={<VideoInterviewResults />} />
         <Route path="/video-practice" element={<VideoPracticeHistory />} />
-        <Route path="/progress-analytics" element={<ProgressAnalytics />} />
-        <Route path="/job-market" element={<JobMarketInsights />} />
+          <Route path="/progress-analytics" element={<ProgressAnalytics />} />
+          <Route path="/job-market" element={<JobMarketInsights />} />
+          <Route path="/adaptive-interview" element={<AdaptiveInterview />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
