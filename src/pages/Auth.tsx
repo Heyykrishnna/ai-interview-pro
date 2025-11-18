@@ -162,7 +162,7 @@ const Auth = () => {
               <Brain className="w-10 h-10 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-foreground">AI Interview Pro</h1>
+              <h1 className="text-4xl font-bold text-foreground">Quantum Query</h1>
               <p className="text-muted-foreground text-lg">Master Your Interview Skills</p>
             </div>
           </div>
