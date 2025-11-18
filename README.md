@@ -191,7 +191,7 @@ await supabase.functions.invoke('analyze-video-interview', {
 ### 7. Edge Function Implementation
 
 #### Function Structure
-```typescript
+<!-- ```typescript
 serve(async (req) => {
   // 1. Parse request
   const { sessionId, question } = await req.json();
@@ -233,7 +233,7 @@ serve(async (req) => {
     })
     .eq('id', sessionId);
 });
-```
+``` -->
 
 ### 8. Error Handling
 

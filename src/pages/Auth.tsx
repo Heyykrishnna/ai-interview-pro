@@ -153,24 +153,28 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
-        {/* Left Side - Branding */}
-        <div className="hidden md:block space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center">
-              <Brain className="w-10 h-10 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold text-foreground">AI Interview Pro</h1>
-              <p className="text-muted-foreground text-lg">Master Your Interview Skills</p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background flex">
+      {/* Left side - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-hero relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
+        <div className="relative z-10 flex flex-col justify-center px-12 text-primary-foreground">
+          <h1 className="text-5xl font-bold mb-6">AI Interview Pro</h1>
+          <p className="text-xl mb-12 opacity-90">Master your interview skills with AI-powered practice sessions</p>
           
-          <div className="space-y-6 mt-12">
-            <div className="flex items-start gap-4 p-4 rounded-lg bg-card border border-border">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-6 h-6 text-primary" />
+          <div className="space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                <Brain className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-lg mb-1">AI-Powered Feedback</h3>
+                <p className="opacity-80">Get instant, detailed feedback on your answers</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                <Target className="w-6 h-6" />
               </div>
               <div>
                 <h3 className="font-semibold text-foreground mb-1">AI-Powered Practice</h3>
@@ -257,102 +261,39 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? (
-                      <>
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent"></div>
-                        Signing in...
-                      </>
-                    ) : (
-                      <>
-                        <LogIn className="mr-2 h-4 w-4" />
-                        Sign In
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="John Doe"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      disabled={loading}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
-                        disabled={loading}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
-                        disabled={loading}
-                        required
-                        minLength={6}
-                      />
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Password must be at least 6 characters
-                    </p>
-                  </div>
-
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? (
-                      <>
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent"></div>
-                        Creating account...
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Create Account
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-
-            <div className="mt-6 text-center">
-              <Button
-                variant="link"
-                onClick={() => navigate("/")}
-                className="text-sm text-muted-foreground"
-              >
-                Back to Home
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Right side - Auth form */}
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8 lg:hidden">
+            <h1 className="text-3xl font-bold text-primary mb-2">AI Interview Pro</h1>
+            <p className="text-muted-foreground">Practice makes perfect</p>
+          </div>
+          
+          <div className="bg-card rounded-lg shadow-medium p-8">
+            <SupabaseAuth
+              supabaseClient={supabase}
+              appearance={{
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: "hsl(215, 85%, 28%)",
+                      brandAccent: "hsl(180, 75%, 50%)",
+                    },
+                  },
+                },
+                className: {
+                  container: "space-y-4",
+                  label: "text-sm font-medium text-foreground",
+                  button: "w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 font-medium transition-colors",
+                  input: "w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring",
+                },
+              }}
+              providers={[]}
+              redirectTo={`${window.location.origin}/dashboard`}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

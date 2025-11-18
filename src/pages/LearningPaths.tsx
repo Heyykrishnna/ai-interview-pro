@@ -104,7 +104,7 @@ const LearningPaths = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
             <Brain className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold text-primary">AI Interview Pro</h1>
+            <h1 className="text-2xl font-bold text-primary">Quantum Query</h1>
           </div>
           <nav className="flex items-center gap-4">
             {user && (

@@ -239,7 +239,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-gray-200 py-12 bg-gray-50">
         <div className="container mx-auto px-4 text-center text-gray-600">
-          <p className="text-sm">© 2024 AI Interview Pro. All rights reserved.</p>
+          <p className="text-sm">© 2024 Quantum Query. All rights reserved.</p>
         </div>
       </footer>
     </div>
