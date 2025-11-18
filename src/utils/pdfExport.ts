@@ -94,7 +94,7 @@ export const exportRoadmapToPDF = (
 
   // Recommended Roles
   if (recommendations.recommended_roles && recommendations.recommended_roles.length > 0) {
-    addSectionHeader('🎯 Recommended Career Roles');
+    addSectionHeader('Recommended Career Roles');
     recommendations.recommended_roles.forEach((role, idx) => {
       addText(`${idx + 1}. ${role.title}`, 12, true);
       addText(`Market Demand: ${role.market_demand}`, 10);
@@ -105,7 +105,7 @@ export const exportRoadmapToPDF = (
 
   // Skill Gaps
   if (recommendations.skill_gaps && recommendations.skill_gaps.length > 0) {
-    addSectionHeader('⚠️ Skills to Develop');
+    addSectionHeader('Skills to Develop');
     recommendations.skill_gaps.forEach((gap, idx) => {
       addText(`${idx + 1}. ${gap.skill}`, 12, true);
       addText(`Importance: ${gap.importance}`, 10);
@@ -116,7 +116,7 @@ export const exportRoadmapToPDF = (
 
   // Learning Priorities
   if (recommendations.learning_priorities && recommendations.learning_priorities.length > 0) {
-    addSectionHeader('📚 Learning Priorities');
+    addSectionHeader('Learning Priorities');
     recommendations.learning_priorities
       .sort((a, b) => a.priority - b.priority)
       .forEach((priority) => {
@@ -129,7 +129,7 @@ export const exportRoadmapToPDF = (
 
   // Preparation Roadmap
   if (recommendations.preparation_roadmap) {
-    addSectionHeader('🗺️ 3-Month Preparation Plan');
+    addSectionHeader('3-Month Preparation Plan');
     
     // Parse roadmap into weeks
     const roadmapLines = recommendations.preparation_roadmap.split('\n');
@@ -150,7 +150,7 @@ export const exportRoadmapToPDF = (
   // Weekly Checklist Template
   doc.addPage();
   yPosition = margin;
-  addSectionHeader('✅ Weekly Progress Tracker');
+  addSectionHeader('Weekly Progress Tracker');
   
   addText('Use this template to track your weekly progress:', 10, true);
   yPosition += 5;
@@ -187,14 +187,14 @@ export const exportRoadmapToPDF = (
   if (recommendations.market_insights) {
     doc.addPage();
     yPosition = margin;
-    addSectionHeader('💡 Market Insights & Positioning');
+    addSectionHeader('Market Insights & Positioning');
     addText(recommendations.market_insights, 10);
   }
 
   // Footer on last page
-  doc.setFontSize(8);
+  doc.setFontSize(12);
   doc.setTextColor(128, 128, 128);
-  doc.text('AI Interview Pro - Career Preparation System', pageWidth / 2, pageHeight - 10, { align: 'center' });
+  doc.text('Quantum Query - Career Preparation System', pageWidth / 2, pageHeight - 10, { align: 'center' });
 
   // Save the PDF
   const fileName = `Career_Roadmap_${userName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
