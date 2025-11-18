@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, TrendingUp, Sparkles, Target, BookOpen, Lightbulb, RefreshCw, ArrowLeft, LogOut } from "lucide-react";
+import { Brain, TrendingUp, Sparkles, Target, BookOpen, Lightbulb, RefreshCw, ArrowLeft, LogOut, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { exportRoadmapToPDF } from "@/utils/pdfExport";
 
 export default function JobMarketInsights() {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function JobMarketInsights() {
   const [trends, setTrends] = useState<any[]>([]);
   const [recommendations, setRecommendations] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("Software Engineering");
+  const [userName, setUserName] = useState<string>("User");
 
   const categories = [
     "Software Engineering",
@@ -43,6 +45,17 @@ export default function JobMarketInsights() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+
+      // Load user profile for name
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+      
+      if (profileData?.full_name) {
+        setUserName(profileData.full_name);
+      }
 
       // Load trends
       const { data: trendsData } = await supabase
@@ -149,6 +162,42 @@ export default function JobMarketInsights() {
       low: "destructive",
     };
     return <Badge variant={variants[level] || "secondary"}>{level} demand</Badge>;
+  };
+
+  const handleExportPDF = () => {
+    if (!recommendations) {
+      toast({
+        title: "No data to export",
+        description: "Please generate career guidance first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      exportRoadmapToPDF(
+        {
+          recommended_roles: recommendations.recommended_roles as any,
+          skill_gaps: recommendations.skill_gaps as any,
+          learning_priorities: recommendations.learning_priorities as any,
+          preparation_roadmap: recommendations.preparation_roadmap as string,
+          market_insights: recommendations.market_insights as string,
+        },
+        userName
+      );
+      
+      toast({
+        title: "Success",
+        description: "Roadmap exported successfully!",
+      });
+    } catch (error) {
+      console.error("Error exporting PDF:", error);
+      toast({
+        title: "Error",
+        description: "Failed to export roadmap",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -315,21 +364,31 @@ export default function JobMarketInsights() {
           <TabsContent value="guidance" className="space-y-6">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      <BookOpen className="h-5 w-5" />
-                      Personalized Career Guidance
-                    </CardTitle>
-                    <CardDescription>
-                      AI-generated recommendations based on your profile and performance
-                    </CardDescription>
-                  </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5" />
+                    Personalized Career Guidance
+                  </CardTitle>
+                  <CardDescription>
+                    AI-generated recommendations based on your profile and performance
+                  </CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleExportPDF}
+                    variant="outline"
+                    disabled={!recommendations}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Export PDF
+                  </Button>
                   <Button onClick={generateGuidance} disabled={researching}>
                     <Sparkles className={`h-4 w-4 mr-2 ${researching ? "animate-spin" : ""}`} />
                     Generate
                   </Button>
                 </div>
+              </div>
               </CardHeader>
               <CardContent className="space-y-6">
                 {!recommendations ? (
