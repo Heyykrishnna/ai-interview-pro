@@ -149,7 +149,7 @@ const Dashboard = () => {
 
           <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/job-market")}>
             <CardHeader>
-              <div className="w-12 h-12 rounded-lg bg-chart-1 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-lg bg-chart-1 flex items-center justify-center mb-4 bg-black">
                 <TrendingUp className="w-6 h-6 text-primary-foreground" />
               </div>
               <CardTitle>Job Market</CardTitle>
