@@ -211,6 +211,7 @@ const Auth = () => {
         </div>
 
         {/* Right Side - Auth Forms */}
+      </div>
         <Card className="border-2">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-2xl text-center">Welcome</CardTitle>
@@ -260,41 +261,41 @@ const Auth = () => {
                       />
                     </div>
                   </div>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Signing in..." : "Sign In"}
+                  </Button>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="signup">
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
 
       {/* Right side - Auth form */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8 lg:hidden">
-            <h1 className="text-3xl font-bold text-primary mb-2">AI Interview Pro</h1>
-            <p className="text-muted-foreground">Practice makes perfect</p>
-          </div>
-          
-          <div className="bg-card rounded-lg shadow-medium p-8">
-            <SupabaseAuth
-              supabaseClient={supabase}
-              appearance={{
-                theme: ThemeSupa,
-                variables: {
-                  default: {
-                    colors: {
-                      brand: "hsl(215, 85%, 28%)",
-                      brandAccent: "hsl(180, 75%, 50%)",
-                    },
-                  },
-                },
-                className: {
-                  container: "space-y-4",
-                  label: "text-sm font-medium text-foreground",
-                  button: "w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 font-medium transition-colors",
-                  input: "w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring",
-                },
-              }}
-              providers={[]}
-              redirectTo={`${window.location.origin}/dashboard`}
-            />
-          </div>
-        </div>
-      </div>
+      <SupabaseAuth
+        supabaseClient={supabase}
+        appearance={{
+          theme: ThemeSupa,
+          variables: {
+            default: {
+              colors: {
+                brand: "hsl(215, 85%, 28%)",
+                brandAccent: "hsl(180, 75%, 50%)",
+              },
+            },
+          },
+          className: {
+            container: "space-y-4",
+            label: "text-sm font-medium text-foreground",
+            button: "w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 font-medium transition-colors",
+            input: "w-full px-3 py-2 border border-input bg-background rounded-md focus:outline-none focus:ring-2 focus:ring-ring",
+          },
+        }}
+        providers={[]}
+        redirectTo={`${window.location.origin}/dashboard`}
+      />
     </div>
   );
 };
