@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, FileText, LogOut, TrendingUp, Upload, Play } from "lucide-react";
+import { Brain, FileText, LogOut, TrendingUp, Upload, Play, Target } from "lucide-react";
 import { toast } from "sonner";
 
 const Dashboard = () => {
@@ -140,7 +140,7 @@ const Dashboard = () => {
           <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/learning-paths")}>
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-accent flex items-center justify-center mb-4">
-                <TrendingUp className="w-6 h-6 text-accent-foreground" />
+                <FileText className="w-6 h-6 text-accent-foreground" />
               </div>
               <CardTitle>Learning Paths</CardTitle>
               <CardDescription>Explore career roadmaps</CardDescription>
@@ -150,10 +150,20 @@ const Dashboard = () => {
           <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/job-market")}>
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-chart-1 flex items-center justify-center mb-4">
-                <Brain className="w-6 h-6 text-primary-foreground" />
+                <TrendingUp className="w-6 h-6 text-primary-foreground" />
               </div>
               <CardTitle>Job Market</CardTitle>
               <CardDescription>AI trends & guidance</CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/adaptive-interview")}>
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center mb-4">
+                <Target className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <CardTitle>Adaptive Interview</CardTitle>
+              <CardDescription>Skill gap practice</CardDescription>
             </CardHeader>
           </Card>
         </div>

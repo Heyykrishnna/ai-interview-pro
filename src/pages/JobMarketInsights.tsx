@@ -6,10 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, TrendingUp, Sparkles, Target, BookOpen, Lightbulb, RefreshCw, ArrowLeft, LogOut } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function JobMarketInsights() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [researching, setResearching] = useState(false);
   const [trends, setTrends] = useState<any[]>([]);
@@ -78,11 +79,18 @@ export default function JobMarketInsights() {
 
       if (error) throw error;
 
-      toast.success("Job market trends updated!");
+      toast({
+        title: "Success",
+        description: "Job market trends updated!",
+      });
       await loadData();
     } catch (error) {
       console.error("Error researching trends:", error);
-      toast.error("Failed to research trends");
+      toast({
+        title: "Error",
+        description: "Failed to research trends",
+        variant: "destructive",
+      });
     } finally {
       setResearching(false);
     }
@@ -103,11 +111,27 @@ export default function JobMarketInsights() {
 
       if (error) throw error;
 
-      toast.success("Personalized guidance generated!");
+      toast({
+        title: "Success",
+        description: "Career guidance generated successfully! You can now start an adaptive interview.",
+        action: (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate("/adaptive-interview")}
+          >
+            Start Interview
+          </Button>
+        ),
+      });
       await loadData();
     } catch (error) {
       console.error("Error generating guidance:", error);
-      toast.error("Failed to generate guidance");
+      toast({
+        title: "Error",
+        description: "Failed to generate guidance",
+        variant: "destructive",
+      });
     } finally {
       setResearching(false);
     }
