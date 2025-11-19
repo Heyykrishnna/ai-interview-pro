@@ -197,6 +197,95 @@ export type Database = {
           },
         ]
       }
+      peer_interview_ratings: {
+        Row: {
+          communication_score: number
+          created_at: string
+          feedback_text: string | null
+          id: string
+          overall_score: number
+          problem_solving_score: number
+          rated_user_id: string
+          rater_user_id: string
+          session_id: string
+          technical_score: number
+        }
+        Insert: {
+          communication_score: number
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          overall_score: number
+          problem_solving_score: number
+          rated_user_id: string
+          rater_user_id: string
+          session_id: string
+          technical_score: number
+        }
+        Update: {
+          communication_score?: number
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          overall_score?: number
+          problem_solving_score?: number
+          rated_user_id?: string
+          rater_user_id?: string
+          session_id?: string
+          technical_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peer_interview_ratings_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "peer_interview_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      peer_interview_sessions: {
+        Row: {
+          created_at: string
+          difficulty_level: string
+          duration_minutes: number
+          guest_user_id: string | null
+          host_user_id: string
+          id: string
+          meeting_notes: string | null
+          scheduled_at: string
+          status: string
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty_level: string
+          duration_minutes?: number
+          guest_user_id?: string | null
+          host_user_id: string
+          id?: string
+          meeting_notes?: string | null
+          scheduled_at: string
+          status?: string
+          topic: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          difficulty_level?: string
+          duration_minutes?: number
+          guest_user_id?: string | null
+          host_user_id?: string
+          id?: string
+          meeting_notes?: string | null
+          scheduled_at?: string
+          status?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
