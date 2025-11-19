@@ -87,6 +87,9 @@ const Dashboard = () => {
             <Button variant="ghost" onClick={() => navigate("/job-market")}>
               Job Market
             </Button>
+            <Button variant="ghost" onClick={() => navigate("/leaderboard")}>
+              Leaderboard
+            </Button>
             <Button variant="ghost" onClick={() => navigate("/profile")}>
               Profile
             </Button>
@@ -164,6 +167,16 @@ const Dashboard = () => {
               </div>
               <CardTitle>Adaptive Interview</CardTitle>
               <CardDescription>Skill gap practice</CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="hover:shadow-medium transition-shadow cursor-pointer" onClick={() => navigate("/peer-interviews")}>
+            <CardHeader>
+              <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center mb-4">
+                <Users className="w-6 h-6 text-secondary-foreground" />
+              </div>
+              <CardTitle>Peer Interviews</CardTitle>
+              <CardDescription>Practice with peers</CardDescription>
             </CardHeader>
           </Card>
         </div>
