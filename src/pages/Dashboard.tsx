@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, FileText, LogOut, TrendingUp, Upload, Play, Target } from "lucide-react";
+import { Brain, FileText, LogOut, TrendingUp, Upload, Play, Target, Users } from "lucide-react";
 import { toast } from "sonner";
 
 const Dashboard = () => {
