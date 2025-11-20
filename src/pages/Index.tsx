@@ -10,7 +10,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">{/* Hero Section */}
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(var(--primary)/0.05),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.05),transparent_50%)]"></div>
@@ -23,7 +23,7 @@ const Index = () => {
             <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground leading-tight">
               Elevate Your Interview Skills with AI
             </h1>
-            <p className="text-xl md:text-2xl mb-10 text-muted-foreground leading-relaxed">
+            <p className="text-xl md:text-2xl mb-10 text-foreground/80 leading-relaxed">
               The complete AI toolkit to ace interviews and land your dream role. Practice with AI-powered interviews, get instant feedback, and track your progress.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
@@ -133,88 +133,84 @@ const Index = () => {
       </section>
 
       {/* Job Profiles Section */}
-      <section className="py-24 bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50">
+      <section className="py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
               Get Ready for Jobs at Leading Firms
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-muted-foreground">
               Explore what you need to learn for your dream role and practice with realistic simulations
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="p-8 hover:shadow-xl transition-all cursor-pointer border-0 bg-white rounded-2xl group" onClick={() => handleNavigate("/learning-paths")}>
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-6 shadow-lg shadow-violet-500/30 group-hover:scale-110 transition-transform">
-                <Code className="w-8 h-8 text-white" />
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 cursor-pointer border-2 group" onClick={() => handleNavigate("/learning-paths")}>
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Code className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-gray-900">Software Developer</h3>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">Software Developer</h3>
               <ul className="space-y-3">
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-violet-600 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                   <span>Data Structures & Algorithms</span>
                 </li>
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-violet-600 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                   <span>System Design</span>
                 </li>
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-violet-600 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                   <span>Programming Languages</span>
                 </li>
               </ul>
             </Card>
 
-            <Card className="p-8 hover:shadow-xl transition-all cursor-pointer border-0 bg-white rounded-2xl group" onClick={() => handleNavigate("/learning-paths")}>
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-pink-600 flex items-center justify-center mb-6 shadow-lg shadow-fuchsia-500/30 group-hover:scale-110 transition-transform">
-                <Database className="w-8 h-8 text-white" />
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 cursor-pointer border-2 group" onClick={() => handleNavigate("/learning-paths")}>
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Database className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-gray-900">Data Scientist</h3>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">Data Scientist</h3>
               <ul className="space-y-3">
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-fuchsia-600 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                   <span>Machine Learning</span>
                 </li>
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-fuchsia-600 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                   <span>Statistics & Probability</span>
                 </li>
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-fuchsia-600 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                   <span>Python & R</span>
                 </li>
               </ul>
             </Card>
 
-            <Card className="p-8 hover:shadow-xl transition-all cursor-pointer border-0 bg-white rounded-2xl group" onClick={() => handleNavigate("/learning-paths")}>
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
-                <Briefcase className="w-8 h-8 text-white" />
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 cursor-pointer border-2 group" onClick={() => handleNavigate("/learning-paths")}>
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Briefcase className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-gray-900">Product Manager</h3>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">Product Manager</h3>
               <ul className="space-y-3">
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                   <span>Product Strategy</span>
                 </li>
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
                   <span>User Research</span>
                 </li>
-                <li className="flex items-center gap-3 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-purple-600 flex-shrink-0" />
-                  <span>Roadmap Planning</span>
+                <li className="flex items-center gap-3 text-foreground/80">
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                  <span>Business Analysis</span>
                 </li>
               </ul>
             </Card>
           </div>
 
           <div className="text-center mt-12">
-            <Button 
-              size="lg" 
-              onClick={() => handleNavigate("/learning-paths")}
-              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg shadow-violet-500/30 px-8 py-6 text-lg rounded-xl"
-            >
+            <Button size="lg" onClick={() => handleNavigate("/learning-paths")}>
               View All Learning Paths
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
@@ -223,32 +219,30 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-4">
-          <Card className="bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 text-white p-16 text-center border-0 rounded-3xl shadow-2xl shadow-violet-500/30 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1),transparent_50%),radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.1),transparent_50%)]"></div>
-            <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Start Practicing?</h2>
-              <p className="text-xl mb-10 opacity-95 max-w-2xl mx-auto">
-                Join thousands preparing for their dream jobs with AI-powered interview practice
-              </p>
-              <Button 
-                size="lg" 
-                className="bg-white text-violet-700 hover:bg-gray-100 px-10 py-6 text-lg rounded-xl shadow-xl font-semibold" 
-                onClick={() => handleNavigate("/auth")}
-              >
-                Get Started Now
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </div>
-          </Card>
+      <section className="py-24 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Ready to Ace Your Next Interview?
+          </h2>
+          <p className="text-xl mb-10 text-primary-foreground/90 max-w-2xl mx-auto">
+            Join thousands of professionals who have successfully landed their dream jobs with our AI-powered platform
+          </p>
+          <Button 
+            size="lg" 
+            onClick={() => handleNavigate("/auth")} 
+            variant="secondary"
+            className="shadow-xl hover:shadow-2xl transition-all h-12 px-8 text-lg"
+          >
+            Start Practicing Now
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-12 bg-gray-50">
-        <div className="container mx-auto px-4 text-center text-gray-600">
-          <p className="text-sm">© 2024 Quantum Query. All rights reserved.</p>
+      <footer className="py-12 bg-card border-t">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-muted-foreground">&copy; 2024 InterviewAI. All rights reserved.</p>
         </div>
       </footer>
     </div>
