@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { Brain, Mail, Lock, UserPlus, LogIn, Sparkles } from "lucide-react";
+import { Brain, Mail, Lock, User, ArrowRight, Sparkles } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Auth = () => {
@@ -18,14 +18,12 @@ const Auth = () => {
   const [fullName, setFullName] = useState("");
 
   useEffect(() => {
-    // Check if already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         navigate("/dashboard");
       }
     });
 
-    // Set up auth state listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -153,206 +151,202 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-2xl">
         {/* Left Side - Branding */}
-        <div className="hidden md:block space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center">
-              <Brain className="w-10 h-10 text-primary-foreground" />
+        <div className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-12 flex flex-col justify-between text-primary-foreground">
+          <div>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-12 h-12 rounded-xl bg-background/10 backdrop-blur-sm flex items-center justify-center">
+                <Brain className="w-7 h-7" />
+              </div>
+              <span className="text-2xl font-bold">InterviewAI</span>
             </div>
-            <div>
-              <h1 className="text-4xl font-bold text-foreground">Quantum Query</h1>
-              <p className="text-muted-foreground text-lg">Master Your Interview Skills</p>
-            </div>
+            
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+              Master Your Interview Skills
+            </h1>
+            
+            <p className="text-lg text-primary-foreground/90 mb-8">
+              Join thousands of professionals preparing for their dream careers with AI-powered interview practice.
+            </p>
           </div>
-          
-          <div className="space-y-6 mt-12">
-            <div className="flex items-start gap-4 p-4 rounded-lg bg-card border border-border">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-6 h-6 text-primary" />
+
+          <div className="space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-lg bg-background/10 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1">AI-Powered Practice</h3>
-                <p className="text-sm text-muted-foreground">
-                  Practice with advanced AI that adapts to your skill level and provides instant, personalized feedback.
-                </p>
+                <h3 className="font-semibold mb-1">AI-Powered Feedback</h3>
+                <p className="text-sm text-primary-foreground/80">Get instant, personalized insights on your performance</p>
               </div>
             </div>
-
-            <div className="flex items-start gap-4 p-4 rounded-lg bg-card border border-border">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Brain className="w-6 h-6 text-primary" />
+            
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-lg bg-background/10 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                <Brain className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1">Smart Analytics</h3>
-                <p className="text-sm text-muted-foreground">
-                  Track your progress with detailed analytics and identify areas for improvement.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-4 rounded-lg bg-card border border-border">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <UserPlus className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground mb-1">Career Guidance</h3>
-                <p className="text-sm text-muted-foreground">
-                  Get personalized career recommendations and market insights to land your dream job.
-                </p>
+                <h3 className="font-semibold mb-1">Practice Anywhere</h3>
+                <p className="text-sm text-primary-foreground/80">Video, voice, and text-based interview simulations</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right Side - Auth Forms */}
-        <Card className="border-2">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-2xl text-center">Welcome</CardTitle>
-            <CardDescription className="text-center">
-              Sign in to your account or create a new one
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
+        <div className="bg-card p-12">
+          <Tabs defaultValue="signin" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsTrigger value="signin">Sign In</TabsTrigger>
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            </TabsList>
 
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
+            <TabsContent value="signin">
+              <form onSubmit={handleSignIn} className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">Welcome Back</h2>
+                  <p className="text-muted-foreground">Continue your interview preparation journey</p>
+                </div>
+
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="email-signin">Email</Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        id="signin-email"
+                        id="email-signin"
                         type="email"
                         placeholder="you@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
                         disabled={loading}
+                        className="pl-10"
                         required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
+                    <Label htmlFor="password-signin">Password</Label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        id="signin-password"
+                        id="password-signin"
                         type="password"
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
                         disabled={loading}
+                        className="pl-10"
                         required
                       />
                     </div>
                   </div>
+                </div>
 
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? (
-                      <>
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent"></div>
-                        Signing in...
-                      </>
-                    ) : (
-                      <>
-                        <LogIn className="mr-2 h-4 w-4" />
-                        Sign In
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
+                <Button 
+                  type="submit" 
+                  className="w-full h-11" 
+                  disabled={loading}
+                >
+                  {loading ? "Signing In..." : "Sign In"}
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
 
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full"
+                  onClick={() => navigate("/")}
+                >
+                  Back to Home
+                </Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="signup">
+              <form onSubmit={handleSignUp} className="space-y-6">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">Create Account</h2>
+                  <p className="text-muted-foreground">Start your journey to interview success</p>
+                </div>
+
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="John Doe"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      disabled={loading}
-                    />
+                    <Label htmlFor="fullname">Full Name</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="fullname"
+                        type="text"
+                        placeholder="John Doe"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        disabled={loading}
+                        className="pl-10"
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="email-signup">Email</Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        id="signup-email"
+                        id="email-signup"
                         type="email"
                         placeholder="you@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
                         disabled={loading}
+                        className="pl-10"
                         required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="password-signup">Password</Label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        id="signup-password"
+                        id="password-signup"
                         type="password"
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
                         disabled={loading}
+                        className="pl-10"
                         required
-                        minLength={6}
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Password must be at least 6 characters
-                    </p>
+                    <p className="text-xs text-muted-foreground">Must be at least 6 characters</p>
                   </div>
+                </div>
 
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? (
-                      <>
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent"></div>
-                        Creating account...
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Create Account
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+                <Button 
+                  type="submit" 
+                  className="w-full h-11" 
+                  disabled={loading}
+                >
+                  {loading ? "Creating Account..." : "Create Account"}
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
 
-            <div className="mt-6 text-center">
-              <Button
-                variant="link"
-                onClick={() => navigate("/")}
-                className="text-sm text-muted-foreground"
-              >
-                Back to Home
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full"
+                  onClick={() => navigate("/")}
+                >
+                  Back to Home
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   );
