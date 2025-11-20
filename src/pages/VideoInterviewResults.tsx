@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, LogOut, ArrowLeft, TrendingUp, Eye, MessageSquare, Award } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import SocialShare from "@/components/SocialShare";
 
 const VideoInterviewResults = () => {
   const { id } = useParams();
@@ -239,13 +240,20 @@ const VideoInterviewResults = () => {
         )}
 
         {/* Actions */}
-        <div className="flex gap-4 justify-center mt-8">
+        <div className="flex gap-4 justify-center mt-8 flex-wrap">
           <Button size="lg" onClick={() => navigate("/video-interview")}>
             Practice Another Question
           </Button>
           <Button size="lg" variant="outline" onClick={() => navigate("/dashboard")}>
             Return to Dashboard
           </Button>
+          <SocialShare
+            title="🎯 Completed Interview Practice!"
+            description={`I just scored ${session.overall_score || 0}/100 on my interview practice! Preparing for my dream role with AI-powered feedback.`}
+            hashtags={["InterviewPrep", "CareerGrowth", "AIInterview"]}
+            variant="outline"
+            size="lg"
+          />
         </div>
       </main>
     </div>

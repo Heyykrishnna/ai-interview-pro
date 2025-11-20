@@ -12,6 +12,7 @@ import { Brain, LogOut, Upload, FileText, TrendingUp, Target, Award, Calendar, B
 import { toast } from "sonner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from "recharts";
+import SocialShare from "@/components/SocialShare";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -317,6 +318,15 @@ const Profile = () => {
               <p className="text-3xl font-bold text-primary">{stats.peerSessions}</p>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Share Progress */}
+        <div className="mb-6 flex justify-center">
+          <SocialShare
+            title="🚀 My Interview Prep Progress!"
+            description={`Completed ${stats.completedSessions} interview sessions with an average score of ${stats.averageScore}%! Improving my skills with AI-powered interview practice.`}
+            hashtags={["InterviewPrep", "CareerGrowth", "SkillDevelopment"]}
+          />
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
