@@ -52,7 +52,7 @@ export default function JobMarketInsights() {
         .select("full_name")
         .eq("id", user.id)
         .single();
-      
+
       if (profileData?.full_name) {
         setUserName(profileData.full_name);
       }
@@ -185,7 +185,7 @@ export default function JobMarketInsights() {
         },
         userName
       );
-      
+
       toast({
         title: "Success",
         description: "Roadmap exported successfully!",
@@ -364,31 +364,31 @@ export default function JobMarketInsights() {
           <TabsContent value="guidance" className="space-y-6">
             <Card>
               <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="h-5 w-5" />
-                    Personalized Career Guidance
-                  </CardTitle>
-                  <CardDescription>
-                    AI-generated recommendations based on your profile and performance
-                  </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="h-5 w-5" />
+                      Personalized Career Guidance
+                    </CardTitle>
+                    <CardDescription>
+                      AI-generated recommendations based on your profile and performance
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleExportPDF}
+                      variant="outline"
+                      disabled={!recommendations}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Export PDF
+                    </Button>
+                    <Button onClick={generateGuidance} disabled={researching}>
+                      <Sparkles className={`h-4 w-4 mr-2 ${researching ? "animate-spin" : ""}`} />
+                      Generate
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleExportPDF}
-                    variant="outline"
-                    disabled={!recommendations}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Export PDF
-                  </Button>
-                  <Button onClick={generateGuidance} disabled={researching}>
-                    <Sparkles className={`h-4 w-4 mr-2 ${researching ? "animate-spin" : ""}`} />
-                    Generate
-                  </Button>
-                </div>
-              </div>
               </CardHeader>
               <CardContent className="space-y-6">
                 {!recommendations ? (
@@ -493,9 +493,53 @@ export default function JobMarketInsights() {
                         <CardTitle>3-Month Preparation Roadmap</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-muted-foreground whitespace-pre-wrap">
-                          {recommendations.preparation_roadmap}
-                        </p>
+                        <div className="space-y-3">
+                          {recommendations.preparation_roadmap.split('\n').map((line: string, idx: number) => {
+                            // Skip empty lines
+                            if (!line.trim()) return null;
+
+                            // Parse markdown-style bold text
+                            const renderLine = (text: string) => {
+                              const parts = text.split(/(\*\*.*?\*\*)/g);
+                              return parts.map((part, i) => {
+                                if (part.startsWith('**') && part.endsWith('**')) {
+                                  return <strong key={i} className="font-bold text-foreground">{part.slice(2, -2)}</strong>;
+                                }
+                                return <span key={i}>{part}</span>;
+                              });
+                            };
+
+                            // Check if it's a header (starts with ##)
+                            if (line.trim().startsWith('##')) {
+                              const headerText = line.replace(/^#+\s*/, '');
+                              return (
+                                <h3 key={idx} className="text-lg font-bold text-foreground mt-4 mb-2">
+                                  {renderLine(headerText)}
+                                </h3>
+                              );
+                            }
+
+                            // Check if it's a bullet point
+                            if (line.trim().startsWith('-') || line.trim().startsWith('*')) {
+                              const bulletText = line.replace(/^[-*]\s*/, '');
+                              return (
+                                <div key={idx} className="flex gap-2 ml-4">
+                                  <span className="text-primary font-bold mt-0.5">•</span>
+                                  <p className="text-muted-foreground flex-1">
+                                    {renderLine(bulletText)}
+                                  </p>
+                                </div>
+                              );
+                            }
+
+                            // Regular paragraph
+                            return (
+                              <p key={idx} className="text-muted-foreground">
+                                {renderLine(line)}
+                              </p>
+                            );
+                          })}
+                        </div>
                       </CardContent>
                     </Card>
 
