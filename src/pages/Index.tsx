@@ -12,26 +12,25 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50">
-        {/* <Nav /> */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(139,92,246,0.1),transparent_50%),radial-gradient(circle_at_70%_80%,rgba(217,70,239,0.1),transparent_50%)]"></div>
+      <section className="relative overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(var(--primary)/0.05),transparent_50%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.05),transparent_50%)]"></div>
         <div className="container mx-auto px-4 py-24 md:py-32 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-100 text-violet-700 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
               AI-Powered Interview Preparation
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-foreground leading-tight">
               Elevate Your Interview Skills with AI
             </h1>
-            <p className="text-xl md:text-xl mb-10 text-gray-600 leading-relaxed">
+            <p className="text-xl md:text-2xl mb-10 text-muted-foreground leading-relaxed">
               The complete AI toolkit to ace interviews and land your dream role. Practice with AI-powered interviews, get instant feedback, and track your progress.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Button 
                 size="lg" 
                 onClick={() => handleNavigate("/auth")} 
-                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg shadow-violet-500/30 px-8 py-6 text-lg rounded-xl"
+                className="h-12 px-8 text-lg"
               >
                 Get Started Free
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -39,19 +38,19 @@ const Index = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-2 border-violet-200 text-violet-700 hover:bg-violet-50 px-8 py-6 text-lg rounded-xl" 
+                className="h-12 px-8 text-lg" 
                 onClick={() => handleNavigate("/learning-paths")}
               >
                 Explore Learning Paths
               </Button>
             </div>
-            <div className="mt-12 flex items-center justify-center gap-8 text-sm text-gray-600">
+            <div className="mt-12 flex items-center justify-center gap-8 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-violet-600" />
+                <Users className="w-5 h-5 text-primary" />
                 <span>10,000+ Users</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-violet-600" />
+                <Award className="w-5 h-5 text-primary" />
                 <span>Trusted by Top Companies</span>
               </div>
             </div>
@@ -60,63 +59,73 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
               Supercharge Your Interview Preparation
             </h2>
-            <p className="text-xl text-gray-600">Everything you need to succeed in your next interview</p>
+            <p className="text-xl text-muted-foreground">Everything you need to succeed in your next interview</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            <Card className="p-8 hover:shadow-xl transition-all border-0 bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl cursor-pointer" onClick={() => handleNavigate("/auth")}>
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-6 shadow-lg shadow-violet-500/30">
-                <Brain className="w-7 h-7 text-white" />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-2 cursor-pointer group" onClick={() => handleNavigate("/auth")}>
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Brain className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">AI-Powered Feedback</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Get detailed, constructive feedback on every answer with model responses to learn from
+              <h3 className="text-xl font-bold mb-3 text-foreground">AI-Powered Feedback</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Get instant, actionable insights on your interview performance with advanced AI analysis of your responses, body language, and communication style.
               </p>
             </Card>
 
-            <Card className="p-8 hover:shadow-xl transition-all border-0 bg-gradient-to-br from-fuchsia-50 to-pink-50 rounded-2xl cursor-pointer" onClick={() => handleNavigate("/video-interview")}>
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-600 flex items-center justify-center mb-6 shadow-lg shadow-fuchsia-500/30">
-                <Brain className="w-7 h-7 text-white" />
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-2 cursor-pointer group" onClick={() => handleNavigate("/auth")}>
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Target className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">Video Practice</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Record your responses and get AI feedback on delivery, body language, and confidence
+              <h3 className="text-xl font-bold mb-3 text-foreground">Video Practice</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Record your responses to common interview questions and get detailed feedback on delivery, confidence, and body language.
               </p>
             </Card>
 
-            <Card className="p-8 hover:shadow-xl transition-all border-0 bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl cursor-pointer" onClick={() => handleNavigate("/auth")}>
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center mb-6 shadow-lg shadow-purple-500/30">
-                <Target className="w-7 h-7 text-white" />
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-2 cursor-pointer group" onClick={() => handleNavigate("/auth")}>
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Zap className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">Role-Specific Practice</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Practice interviews tailored to your target role and industry
+              <h3 className="text-xl font-bold mb-3 text-foreground">Role-Specific Practice</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Tailored interview questions and scenarios for your specific role, from software engineering to product management.
               </p>
             </Card>
 
-            <Card className="p-8 hover:shadow-xl transition-all border-0 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl cursor-pointer" onClick={() => handleNavigate("/auth")}>
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mb-6 shadow-lg shadow-indigo-500/30">
-                <Zap className="w-7 h-7 text-white" />
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-2 cursor-pointer group" onClick={() => handleNavigate("/auth")}>
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">Resume Analysis</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Upload your resume for personalized interview questions based on your experience
+              <h3 className="text-xl font-bold mb-3 text-foreground">Progress Tracking</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Monitor your improvement over time with detailed analytics and personalized recommendations for skill development.
               </p>
             </Card>
 
-            <Card className="p-8 hover:shadow-xl transition-all border-0 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl cursor-pointer" onClick={() => handleNavigate("/job-market")}>
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center mb-6 shadow-lg shadow-emerald-500/30">
-                <TrendingUp className="w-7 h-7 text-white" />
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-2 cursor-pointer group" onClick={() => handleNavigate("/auth")}>
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Users className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">Job Market Insights</h3>
-              <p className="text-gray-600 leading-relaxed">
-                AI-researched trends and personalized career guidance for interview preparation
+              <h3 className="text-xl font-bold mb-3 text-foreground">Peer Interviews</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Practice with peers in real-time video sessions, give and receive feedback, and learn from each other's experiences.
+              </p>
+            </Card>
+
+            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-2 cursor-pointer group" onClick={() => handleNavigate("/auth")}>
+              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <CheckCircle className="w-7 h-7 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-foreground">Job Market Insights</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Stay updated with trending skills, salary ranges, and company-specific interview patterns to give you a competitive edge.
               </p>
             </Card>
           </div>

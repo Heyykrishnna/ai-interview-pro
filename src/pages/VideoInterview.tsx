@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, LogOut, Video, StopCircle, Play, Upload, ArrowRight } from "lucide-react";
+import { Brain, LogOut, Video, StopCircle, Play, Upload, ArrowRight, Camera, Mic, RotateCcw, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 
 const COMMON_QUESTIONS = [
   "Tell me about yourself and your background.",
@@ -35,7 +36,6 @@ const VideoInterview = () => {
 
   useEffect(() => {
     checkAuth();
-    // Select random question
     const randomQuestion = COMMON_QUESTIONS[Math.floor(Math.random() * COMMON_QUESTIONS.length)];
     setCurrentQuestion(randomQuestion);
 
@@ -79,6 +79,7 @@ const VideoInterview = () => {
         videoRef.current.srcObject = mediaStream;
       }
       setIsPreviewing(true);
+      toast.success("Camera and microphone connected");
     } catch (error) {
       console.error("Error accessing camera:", error);
       toast.error("Failed to access camera and microphone");
@@ -103,28 +104,26 @@ const VideoInterview = () => {
       const blob = new Blob(chunksRef.current, { type: 'video/webm' });
       setRecordedBlob(blob);
       
-      // Show preview
       if (videoRef.current) {
         videoRef.current.srcObject = null;
         videoRef.current.src = URL.createObjectURL(blob);
       }
+      toast.success("Recording saved! Review or re-record.");
     };
 
     mediaRecorderRef.current = mediaRecorder;
     mediaRecorder.start();
     setIsRecording(true);
     setRecordingTime(0);
+    toast.info("Recording started");
   };
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      
-      // Stop camera stream
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
-        setStream(null);
       }
     }
   };
@@ -133,64 +132,56 @@ const VideoInterview = () => {
     if (!recordedBlob) return;
 
     setIsUploading(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
 
-      // Create session record
-      const { data: session, error: sessionError } = await supabase
-        .from("video_interview_sessions")
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) throw new Error("Not authenticated");
+
+      const fileName = `${session.user.id}/${Date.now()}.webm`;
+
+      toast.info("Uploading video...");
+      const { error: uploadError } = await supabase.storage
+        .from('interview-videos')
+        .upload(fileName, recordedBlob, {
+          contentType: 'video/webm'
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('interview-videos')
+        .getPublicUrl(fileName);
+
+      const { data: sessionData, error: sessionError } = await supabase
+        .from('video_interview_sessions')
         .insert({
-          user_id: user.id,
+          user_id: session.user.id,
           question: currentQuestion,
+          video_url: publicUrl,
           duration_seconds: recordingTime,
-          status: "uploading"
+          status: 'uploaded'
         })
         .select()
         .single();
 
       if (sessionError) throw sessionError;
 
-      // Upload video
-      const fileName = `${user.id}/${session.id}.webm`;
-      const { error: uploadError } = await supabase.storage
-        .from("video-interviews")
-        .upload(fileName, recordedBlob, {
-          contentType: 'video/webm',
-          upsert: false
-        });
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("video-interviews")
-        .getPublicUrl(fileName);
-
-      // Update session with video URL
-      await supabase
-        .from("video_interview_sessions")
-        .update({ video_url: publicUrl, status: "analyzing" })
-        .eq("id", session.id);
-
       setIsUploading(false);
       setIsAnalyzing(true);
+      toast.info("Analyzing your interview...");
 
-      // Call analysis function
-      const { data: analysisData, error: analysisError } = await supabase.functions.invoke(
-        "analyze-video-interview",
-        {
-          body: { sessionId: session.id, videoUrl: publicUrl, question: currentQuestion }
-        }
-      );
+      const { error: functionError } = await supabase.functions.invoke('analyze-video-interview', {
+        body: { sessionId: sessionData.id }
+      });
 
-      if (analysisError) throw analysisError;
+      if (functionError) throw functionError;
 
-      setIsAnalyzing(false);
       toast.success("Analysis complete!");
-      navigate(`/video-interview/${session.id}/results`);
-    } catch (error) {
-      console.error("Error uploading video:", error);
-      toast.error("Failed to upload and analyze video");
+      navigate(`/video-interview-results?sessionId=${sessionData.id}`);
+
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast.error(error.message || "Failed to upload and analyze");
       setIsUploading(false);
       setIsAnalyzing(false);
     }
@@ -199,6 +190,9 @@ const VideoInterview = () => {
   const retake = () => {
     setRecordedBlob(null);
     setRecordingTime(0);
+    if (videoRef.current) {
+      videoRef.current.src = "";
+    }
     startCamera();
   };
 
@@ -214,165 +208,204 @@ const VideoInterview = () => {
   };
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-10 shadow-soft">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Brain className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold text-primary">Quantum Query</h1>
+      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Brain className="w-6 h-6 text-primary" />
+              </div>
+              <h1 className="text-xl font-bold text-foreground">Video Interview Practice</h1>
+            </div>
+            <div className="flex gap-3">
+              <Button variant="ghost" onClick={() => navigate("/dashboard")}>
+                Dashboard
+              </Button>
+              <Button variant="outline" onClick={handleLogout}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
-          <nav className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate("/dashboard")}>
-              Dashboard
-            </Button>
-            <Button variant="ghost" onClick={() => navigate("/video-practice")}>
-              Video Practice
-            </Button>
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
-          </nav>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Video Interview Practice</h2>
-          <p className="text-muted-foreground">Record your answer and get AI feedback on your delivery and body language</p>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Video Preview/Recording */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Recording</CardTitle>
-                <CardDescription>
-                  {!isPreviewing && !recordedBlob && "Click 'Start Camera' to begin"}
-                  {isPreviewing && !isRecording && "Ready to record"}
-                  {isRecording && `Recording: ${formatTime(recordingTime)}`}
-                  {recordedBlob && "Preview your recording"}
-                </CardDescription>
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Video Area */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card className="border-2">
+              <CardHeader className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-2xl flex items-center gap-2">
+                    <Video className="w-6 h-6 text-primary" />
+                    Interview Recording
+                  </CardTitle>
+                  {isRecording && (
+                    <Badge variant="destructive" className="animate-pulse">
+                      <div className="w-2 h-2 rounded-full bg-white mr-2" />
+                      Recording
+                    </Badge>
+                  )}
+                </div>
+                {isRecording && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Recording Time</span>
+                      <span className="font-mono font-bold text-foreground">{formatTime(recordingTime)}</span>
+                    </div>
+                    <Progress value={(recordingTime / 180) * 100} className="h-2" />
+                  </div>
+                )}
               </CardHeader>
               <CardContent>
-                <div className="relative aspect-video bg-black rounded-lg overflow-hidden mb-4">
+                <div className="relative bg-black rounded-xl overflow-hidden aspect-video">
                   <video
                     ref={videoRef}
                     autoPlay
                     playsInline
-                    muted={isRecording || isPreviewing}
-                    controls={!!recordedBlob && !isRecording}
+                    muted={isRecording}
+                    controls={recordedBlob !== null}
                     className="w-full h-full object-cover"
                   />
-                  {isRecording && (
-                    <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
-                      <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                      REC {formatTime(recordingTime)}
+                  {!isPreviewing && !recordedBlob && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                      <div className="text-center">
+                        <Camera className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                        <p className="text-lg text-muted-foreground">Camera Preview</p>
+                        <p className="text-sm text-muted-foreground">Click "Start Camera" to begin</p>
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className="flex gap-4 justify-center">
+                {/* Controls */}
+                <div className="mt-6 flex gap-3 flex-wrap">
                   {!isPreviewing && !recordedBlob && (
-                    <Button onClick={startCamera} size="lg">
-                      <Video className="w-5 h-5 mr-2" />
+                    <Button onClick={startCamera} size="lg" className="flex-1">
+                      <Camera className="w-4 h-4 mr-2" />
                       Start Camera
                     </Button>
                   )}
-
+                  
                   {isPreviewing && !isRecording && !recordedBlob && (
-                    <Button onClick={startRecording} size="lg" className="bg-red-500 hover:bg-red-600">
-                      <Play className="w-5 h-5 mr-2" />
+                    <Button onClick={startRecording} size="lg" className="flex-1">
+                      <Play className="w-4 h-4 mr-2" />
                       Start Recording
                     </Button>
                   )}
-
+                  
                   {isRecording && (
-                    <Button onClick={stopRecording} size="lg" variant="destructive">
-                      <StopCircle className="w-5 h-5 mr-2" />
+                    <Button onClick={stopRecording} variant="destructive" size="lg" className="flex-1">
+                      <StopCircle className="w-4 h-4 mr-2" />
                       Stop Recording
                     </Button>
                   )}
-
+                  
                   {recordedBlob && !isUploading && !isAnalyzing && (
                     <>
-                      <Button onClick={retake} size="lg" variant="outline">
+                      <Button onClick={retake} variant="outline" size="lg" className="flex-1">
+                        <RotateCcw className="w-4 h-4 mr-2" />
                         Retake
                       </Button>
-                      <Button onClick={uploadAndAnalyze} size="lg">
-                        <Upload className="w-5 h-5 mr-2" />
+                      <Button onClick={uploadAndAnalyze} size="lg" className="flex-1">
+                        <Upload className="w-4 h-4 mr-2" />
                         Submit for Analysis
                       </Button>
                     </>
                   )}
-
+                  
                   {(isUploading || isAnalyzing) && (
-                    <div className="flex flex-col items-center gap-4 w-full">
-                      <Progress value={isUploading ? 50 : 75} className="w-full" />
-                      <p className="text-sm text-muted-foreground">
-                        {isUploading ? "Uploading video..." : "Analyzing your performance..."}
-                      </p>
-                    </div>
+                    <Button disabled size="lg" className="flex-1">
+                      <div className="w-4 h-4 mr-2 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      {isUploading ? "Uploading..." : "Analyzing..."}
+                    </Button>
                   )}
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Question and Tips */}
+          {/* Sidebar */}
           <div className="space-y-6">
-            <Card>
+            {/* Question Card */}
+            <Card className="border-2 border-primary/20">
               <CardHeader>
-                <CardTitle>Interview Question</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                  Interview Question
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-lg font-medium mb-4">{currentQuestion}</p>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    const newQuestion = COMMON_QUESTIONS[Math.floor(Math.random() * COMMON_QUESTIONS.length)];
-                    setCurrentQuestion(newQuestion);
-                  }}
-                >
-                  Get New Question
-                </Button>
+                <p className="text-lg font-medium leading-relaxed text-foreground">
+                  {currentQuestion}
+                </p>
               </CardContent>
             </Card>
 
+            {/* Tips Card */}
             <Card>
               <CardHeader>
-                <CardTitle>Tips for Success</CardTitle>
+                <CardTitle className="text-lg">Interview Tips</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div>
-                  <h4 className="font-semibold mb-1">🎥 Camera Setup</h4>
-                  <p className="text-muted-foreground">Position yourself at eye level with good lighting</p>
+              <CardContent className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-primary">1</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Take a moment to think before answering
+                  </p>
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-1">👁️ Eye Contact</h4>
-                  <p className="text-muted-foreground">Look at the camera, not the screen</p>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-primary">2</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Maintain eye contact with the camera
+                  </p>
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-1">😊 Body Language</h4>
-                  <p className="text-muted-foreground">Sit up straight, smile, and use natural gestures</p>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-primary">3</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Speak clearly and at a moderate pace
+                  </p>
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-1">🗣️ Speaking</h4>
-                  <p className="text-muted-foreground">Speak clearly and at a moderate pace</p>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-primary">4</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Use the STAR method (Situation, Task, Action, Result)
+                  </p>
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-1">⏱️ Time</h4>
-                  <p className="text-muted-foreground">Aim for 1-2 minutes per answer</p>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-primary">5</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Be authentic and show enthusiasm
+                  </p>
                 </div>
               </CardContent>
             </Card>
+
+            {/* History Button */}
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => navigate("/video-practice-history")}
+            >
+              <TrendingUp className="w-4 h-4 mr-2" />
+              View Practice History
+            </Button>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
