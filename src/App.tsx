@@ -14,6 +14,7 @@ import VideoInterview from "./pages/VideoInterview";
 import VideoInterviewResults from "./pages/VideoInterviewResults";
 import VideoPracticeHistory from "./pages/VideoPracticeHistory";
 import ProgressAnalytics from "./pages/ProgressAnalytics";
+import Analytics from "./pages/Analytics";
 import JobMarketInsights from "./pages/JobMarketInsights";
 import AdaptiveInterview from "./pages/AdaptiveInterview";
 import PeerInterviews from "./pages/PeerInterviews";
@@ -43,6 +44,7 @@ const App = () => (
         <Route path="/video-interview/:id/results" element={<VideoInterviewResults />} />
         <Route path="/video-practice" element={<VideoPracticeHistory />} />
           <Route path="/progress-analytics" element={<ProgressAnalytics />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/job-market" element={<JobMarketInsights />} />
           <Route path="/adaptive-interview" element={<AdaptiveInterview />} />
           <Route path="/peer-interviews" element={<PeerInterviews />} />
