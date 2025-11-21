@@ -134,10 +134,10 @@ const Dashboard = () => {
   }
 
   const stats = [
-    { icon: Award, label: "Total Sessions", value: sessions.length, gradient: "from-blue-500 to-cyan-500" },
-    { icon: BarChart3, label: "Avg Score", value: "85%", gradient: "from-purple-500 to-pink-500" },
-    { icon: Zap, label: "Current Streak", value: "7 days", gradient: "from-orange-500 to-red-500" },
-    { icon: Clock, label: "Time Practiced", value: "12h", gradient: "from-green-500 to-emerald-500" }
+    { icon: Award, label: "Total Sessions", value: sessions.length, gradient: "from-blue-500 to-cyan-500", path: null },
+    { icon: BarChart3, label: "Avg Score", value: "85%", gradient: "from-purple-500 to-pink-500", path: "/analytics" },
+    { icon: Zap, label: "Current Streak", value: "7 days", gradient: "from-orange-500 to-red-500", path: null },
+    { icon: Clock, label: "Time Practiced", value: "12h", gradient: "from-green-500 to-emerald-500", path: null }
   ];
 
   const quickActions = [
@@ -252,7 +252,11 @@ const Dashboard = () => {
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <Card key={index} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50">
+              <Card 
+                key={index} 
+                className={`relative overflow-hidden group hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/50 ${stat.path ? 'cursor-pointer' : ''}`}
+                onClick={() => stat.path && navigate(stat.path)}
+              >
                 <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-5 group-hover:opacity-10 transition-opacity`}></div>
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
